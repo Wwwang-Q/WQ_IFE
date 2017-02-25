@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>checkbox</title>
+</head>
+<body>
+<style>
+    *{
+        box-sizing: border-box;
+    }
+   .container{
+       width:400px;
+       margin: 100px auto;
+   }
+   .box{
+       margin: 10px;
+       display: -webkit-flex;
+       display:flex;
+   }
+   input{
+       display: none;
+       margin: 5px;
+   }
+
+   /*利用雪碧图*/
+   .radio_spirit+label,#c1_spirit+label{
+       background:url("bg.png") no-repeat;
+       display: inline-block;
+       width: 16px;
+       height: 16px;
+       margin: 5px;
+   }
+    .radio_spirit+label{
+        background-position: -24px -10px;
+    }
+    .radio_spirit:checked+label{
+        background-position: -59px -10px; ;
+    }
+    #c1_spirit+label{
+        background-position: -24px -31px;
+    }
+    #c1_spirit:checked+label{
+        background-position: -59px -31px;
+    }
+
+    /*利用伪元素 */
+    #c1,.radio{
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+    }
+    #c1+label,.radio+label{
+        display: -webkit-flex;
+        display:flex;
+        width: 16px;
+        height: 16px;
+        border: 1px #d9d9d9 solid;
+        margin: 5px;
+    }
+   .radio+label,.radio:checked+label{
+       border-radius: 50px;
+   }
+   #c1:checked+label,.radio:checked+label{
+       border: 1px #d73d32 solid;
+       text-align: center;
+   }
+   #c1:checked+label::after{
+       margin: 0;
+       content: '\2714';
+       color: red;
+       width: 16px;
+       height: 16px;
+   }
+   .radio:checked+label::after{
+       content: '\2022';
+       color: red;
+       width: 16px;
+       height: 16px;
+       font-weight: 700;
+   }
+</style>
+
+<div class="container">
+    <h2>利用伪元素</h2>
+    <div class="box">
+        <input type="checkbox" id="c1">
+        <label for="c1"> </label>
+    </div>
+    <div class="box">
+        <input type="radio" name="task" class="radio" id="r1">
+        <label for="r1"> </label>
+        <input type="radio" name="task" class="radio" id="r2">
+        <label for="r2"></label>
+    </div>
+    <h2>雪碧图</h2>
+    <div class="box">
+        <input type="checkbox" id="c1_spirit">
+        <label for="c1_spirit"> </label>
+    </div>
+    <div class="box">
+        <input type="radio" name="task1" class="radio_spirit" id="r1_spirit">
+        <label for="r1_spirit"> </label>
+        <input type="radio" name="task1" class="radio_spirit" id="r2_spirit">
+        <label for="r2_spirit"></label>
+    </div>
+</div>
+
+</body>
+</html>
