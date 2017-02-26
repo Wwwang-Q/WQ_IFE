@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<!--   <div id="main" style="height:400px"></div>-->
+<div id="main" style="height:400px;margin:50px"></div>
+<!-- ECharts单文件引入 -->
+<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<script src="jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">// 路径配置
+require.config({
+    paths: {
+        echarts: 'http://echarts.baidu.com/build/dist'
+    }
+
+});
+
+// 使用
+require(
+        [
+            'echarts',
+            'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+            'echarts/chart/line' // 使用柱状图就加载bar模块，按需加载
+        ],
+        function(echarts) {
+            var myChart = echarts.init(document.getElementById('main'));
+            //	myChart.showLoading();
+            // 显示标题，图例和空的坐标轴
+            var arr1=[];
+            var arr2=[];
+            $.ajax({
+                type:"get",
+                url:"ECharts.json",
+                async:false,
+                dataType:'json',
+                crossDomain:true,
+                success:function(data){
+                    console.log(data)
+                    if(data.result==true){
+                        var datas=data.data;
+                        for(var i=0;i<datas.length;i++){
+                            arr1.push(datas[i].name);
+                            arr2.push(datas[i].sale);
+                        }
+                        console.log(arr1);
+                        myChart.hideLoading();
+                    }
+                },
+                error:function(xhr){ //fail to upload
+                    var a=JSON.stringify(xhr);
+                    alert(a)
+                    console.log(xhr.responseText); //return the error msg
+                }
+            });
+
+            var option={
+                title: {
+                    text: '异步数据加载示例'
+                },
+                tooltip: {
+                    show:true
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        mark: {show: true},
+                        dataView: {show: true, readOnly: false},
+                        magicType: {show: true, type: ['line', 'bar']},
+                        restore: {show: true},
+                        saveAsImage: {show: true}
+                    }
+                },
+                legend: {
+                    data: ['销量']
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : arr1
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series: [{
+                    "name":"销量",
+                    "type":"bar",
+                    "data":arr2
+                }]
+            };
+            //console.log(option)
+            myChart.setOption(option);
+
+
+
+
+
+            // 异步加载数据
+//		$.get('ECharts.json').done(function(data) {
+//			// 填入数据
+//			myChart.setOption({
+//				xAxis: {
+//					data: data.xAxis
+//				},
+//				series: [{
+//					// 根据名字对应到相应的系列
+//					name: '销量',
+//					data: data.data
+//				}]
+//			});
+//		});
+        }
+);</script>
+<script type="text/javascript">
+
+</script>
+</body>
