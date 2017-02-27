@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RegExp</title>
+</head>
+<body>
+<style>
+    .container{
+        width: 500px;
+        margin: 50px auto;
+    }
+    .box{
+        display: inline-block;
+        float: left;
+        margin: 30px;
+    }
+    label,button{
+         display: block;
+    }
+    button{
+        margin: 20px auto;
+        width: 50px;
+        height: 30px;
+    }
+</style>
+<div class="container">
+    <div class="box">
+        <label>输入手机号:<input type="text" id="number"></label>
+        <button id="btn1">校验</button>
+        <label>校验结果: <input type="text" id="number_reg" disabled="disabled"></label>
+    </div>
+    <div class="box">
+        <label>输入字符串:<input type="text" id="string"></label>
+        <button id="btn2">校验</button>
+        <label>校验结果: <input type="text" id="string_reg" disabled="disabled"></label>
+    </div>
+</div>
+<script>
+    var reg1=/^1((3[0-9])|47|(5[0-35-9])|(8[25-9]))\d{8}/;
+    var reg2=/\b([a-zA-z]+(-[a-zA-z]+)*)\s+\1\b/;
+    var t1=document.getElementById('number_reg');
+    var t2=document.getElementById('string_reg');
+    var bt1=document.getElementById("btn1");
+    var bt2=document.getElementById("btn2");
+
+    bt1.addEventListener('click',function () {
+        var number=document.getElementById("number").value;
+        console.log(number);
+        var ret1=reg1.test(number);
+        console.log(ret1);
+        t1.value=ret1;
+    })
+
+    bt2.addEventListener('click',function () {
+        var string=document.getElementById("string").value;
+        var ret2=reg2.test(string);
+        console.log(ret2);
+        t2.value=ret2;
+    })
+
+</script>
+</body>
+</html>
