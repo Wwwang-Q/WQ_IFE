@@ -39,19 +39,14 @@
       </div>
 </body>
 <script>
-    window.onload=function () {
-        document.onclick=function (event) {
-            var e=event||window.event;//兼容IE,ff
-            var dom =  e.srcElement|| e.target;
-            var thing=document.getElementById('thing');
-            if (dom.className!="origin"&&thing.style.display=="block"){
-                thing.style.display="none";
-            }
-        }
+    document.onclick=function () {
+        var thing=document.getElementById('thing');
+        thing.style.display="none";
     }
     
     function getMousePos(event) {
         var e=arguments.callee.caller.arguments[0]||window.event;//兼容IE,ff
+        e.preventDefault();  //屏蔽原来的右键事件
         var scrollX=document.documentElement.scrollLeft||document.body.scrollLeft;
         var scrollY=document.documentElement.scrollTop||document.body.scrollTop;
         var x=e.pageX||e.clientX+scrollX;
@@ -61,6 +56,7 @@
         thing.style.top=y+"px";
         thing.style.left=x+"px";
         thing.style.display="block";
+        
     }
 
 </script>
