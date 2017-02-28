@@ -55,20 +55,23 @@
     origin.oncontextmenu=function(event) {
         var e=event||window.event;//兼容IE,ff
         e.preventDefault();  //屏蔽原来的右键事件
+        //获得鼠标位置
         var scrollX=document.documentElement.scrollLeft||document.body.scrollLeft;
         var scrollY=document.documentElement.scrollTop||document.body.scrollTop;
         var x=e.pageX||e.clientX+scrollX;
         var y=e.pageY||e.clientY+scrollY;
         console.log(x,y);
+        //获得容器右边界及下边界
         var width=origin.offsetWidth+origin.offsetLeft;
         var height=origin.offsetHeight+origin.offsetTop;
+        //获得菜单尺寸
         var thing=document.getElementById('thing');
         var a=thing.offsetWidth;
         var b=thing.offsetHeight;
-        console.log("width:"+(width-x),a);
+        //计算显示菜单位置
         x=(width-x)>a?x:(x-a);
         y=(height-y)>b?y:(y-b);
-        console.log(x,y);
+        //设置菜单显示
         thing.style.top=y+"px";
         thing.style.left=x+"px";
         thing.style.display="block";
