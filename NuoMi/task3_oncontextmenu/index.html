@@ -5,44 +5,52 @@
     <title>oncontextmenu</title>
     <style>
         #origin{
-            width: 400px;
+            width: 600px;
+            height: 200px;
             margin: 100px auto;
             font-size: 28px;
+            background: #d9d9d9;
         }
-     #thing{
-          display: none;
-         position: absolute;
-         z-index: 999;
-         background: #ffffff;
-     }
-
-        table,td{
-            border-collapse: collapse;
+        #thing{
+            visibility:hidden;
+            position: absolute;
+            z-index: 999;
+            background: #ffffff;
+        }
+        li{
+            border: 1px solid #2f2f2f;
+            padding: 5px 10px;
+        }
+        li:hover{
+            background: #cccccc;
+            color: #ffffff;
+        }
+        ul{
             border: 1px solid #000000;
-            padding: 5px;
+            border-radius: 5px;
+            list-style: none;
+            text-align: center;
+            margin: 0;
+            padding: 0;
         }
     </style>
 </head>
 <body>
-     <div id="origin">今天是个好日子,做点什么呢?</div>
-      <div id="thing">
-          <table>
-              <tr>
-                  <td>打麻将</td>
-                  <td>逛街</td>
-              </tr>
-              <tr>
-                  <td>跳舞</td>
-                  <td>打游戏</td>
-              </tr>
-          </table>
-      </div>
+<div id="origin">Right Click Here</div>
+<div id="thing">
+    <ul>
+        <li>menu1</li>
+        <li>menu2</li>
+        <li>menu3</li>
+    </ul>
+</div>
 </body>
 <script>
     document.onclick=function () {
         var thing=document.getElementById('thing');
-        thing.style.display="none";
+        thing.style.visibility="hidden";
     }
+
     var origin=document.getElementById("origin");
     origin.oncontextmenu=function(event) {
         var e=event||window.event;//兼容IE,ff
@@ -52,11 +60,19 @@
         var x=e.pageX||e.clientX+scrollX;
         var y=e.pageY||e.clientY+scrollY;
         console.log(x,y);
+        var width=origin.offsetWidth+origin.offsetLeft;
+        var height=origin.offsetHeight+origin.offsetTop;
         var thing=document.getElementById('thing');
+        var a=thing.offsetWidth;
+        var b=thing.offsetHeight;
+        console.log("width:"+(width-x),a);
+        x=(width-x)>a?x:(x-a);
+        y=(height-y)>b?y:(y-b);
+        console.log(x,y);
         thing.style.top=y+"px";
         thing.style.left=x+"px";
         thing.style.display="block";
-
+        thing.style.visibility="inherit";
     }
 
 </script>
