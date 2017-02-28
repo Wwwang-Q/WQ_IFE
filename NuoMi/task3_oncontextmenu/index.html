@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>oncontextmenu</title>
+    <style>
+        .origin{
+            width: 400px;
+            margin: 100px auto;
+            font-size: 28px;
+        }
+     #thing{
+          display: none;
+         position: absolute;
+         z-index: 999;
+         background: #ffffff;
+     }
+
+        table,td{
+            border-collapse: collapse;
+            border: 1px solid #000000;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+     <div class="origin" oncontextmenu="getMousePos()">今天是个好日子,做点什么呢?</div>
+      <div id="thing">
+          <table>
+              <tr>
+                  <td>打麻将</td>
+                  <td>逛街</td>
+              </tr>
+              <tr>
+                  <td>跳舞</td>
+                  <td>打游戏</td>
+              </tr>
+          </table>
+      </div>
+</body>
+<script>
+    window.onload=function () {
+        document.onclick=function (event) {
+            var e=event||window.event;//兼容IE,ff
+            var dom =  e.srcElement|| e.target;
+            var thing=document.getElementById('thing');
+            if (dom.className!="origin"&&thing.style.display=="block"){
+                thing.style.display="none";
+            }
+        }
+    }
+    
+    function getMousePos(event) {
+        var e=arguments.callee.caller.arguments[0]||window.event;//兼容IE,ff
+        var scrollX=document.documentElement.scrollLeft||document.body.scrollLeft;
+        var scrollY=document.documentElement.scrollTop||document.body.scrollTop;
+        var x=e.pageX||e.clientX+scrollX;
+        var y=e.pageY||e.clientY+scrollY;
+        console.log(x,y);
+        var thing=document.getElementById('thing');
+        thing.style.top=y+"px";
+        thing.style.left=x+"px";
+        thing.style.display="block";
+    }
+
+</script>
+</html>
