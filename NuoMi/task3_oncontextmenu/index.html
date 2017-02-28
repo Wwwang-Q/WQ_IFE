@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>oncontextmenu</title>
     <style>
-        .origin{
+        #origin{
             width: 400px;
             margin: 100px auto;
             font-size: 28px;
@@ -24,7 +24,7 @@
     </style>
 </head>
 <body>
-     <div class="origin" oncontextmenu="getMousePos()">今天是个好日子,做点什么呢?</div>
+     <div id="origin">今天是个好日子,做点什么呢?</div>
       <div id="thing">
           <table>
               <tr>
@@ -43,9 +43,9 @@
         var thing=document.getElementById('thing');
         thing.style.display="none";
     }
-    
-    function getMousePos(event) {
-        var e=arguments.callee.caller.arguments[0]||window.event;//兼容IE,ff
+    var origin=document.getElementById("origin");
+    origin.oncontextmenu=function(event) {
+        var e=event||window.event;//兼容IE,ff
         e.preventDefault();  //屏蔽原来的右键事件
         var scrollX=document.documentElement.scrollLeft||document.body.scrollLeft;
         var scrollY=document.documentElement.scrollTop||document.body.scrollTop;
@@ -56,7 +56,7 @@
         thing.style.top=y+"px";
         thing.style.left=x+"px";
         thing.style.display="block";
-        
+
     }
 
 </script>
