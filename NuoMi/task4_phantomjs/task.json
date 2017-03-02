@@ -1,0 +1,68 @@
+{
+    "code": 1,
+    "msg": "抓取成功",
+    "word": "baidu",
+    "time": 1488470234553,
+    "dataList": [
+        {
+            "title": "百度一下,你就知道官网",
+            "info": "全球最大的中文搜索引擎、致力于让网民更便捷地获取信息，找到所求。百度超过千亿的中文网页数据库，可以瞬间找到相关的搜索结果。",
+            "link": "http://www.baidu.com/link?url=DxH6JGkbpMj3zsIyadq6U9gKmzSg7KxC-5RggChaQcy",
+            "pic": ""
+        },
+        {
+            "title": "百度网盘_享你所想",
+            "info": "百度网盘为您提供文件的网络备份、同步和分享服务。空间大、速度快、安全稳固,支持教育网加速,支持手机端。现在注册即有机会享受15G的免费存储空间",
+            "link": "http://www.baidu.com/link?url=bRx-ecWzK4-mBA1dSSlLBD5bX27bXz1ytco_xi6HVia",
+            "pic": ""
+        },
+        {
+            "title": "百度_百度百科",
+            "info": "",
+            "link": "http://www.baidu.com/link?url=342WUGywojR9f6cGyGGKjpj2klJou5SYJEhqKh0r7OwCrocpJWf5CQTai4PlxLhPXECYkeyr--RYz1u8hUbdLJq9PPtzCL2VXQlJwPfPYcO",
+            "pic": ""
+        },
+        {
+            "title": "桌面百度最新官方版下载_百度软件中心",
+            "info": "",
+            "link": "http://www.baidu.com/link?url=342WUGywojR9f6cGyGGKjdF8IX6e0rEOFacnPH6j2njM7Ruj1nv9dMwX0JVFdUPDBg3GysOS-FoNDNe_Nc0MBa",
+            "pic": ""
+        },
+        {
+            "title": "百度官方吧_百度贴吧",
+            "info": "",
+            "link": "http://www.baidu.com/link?url=sb4A0XJnJkoQIadqa0ch2nQX0phpfbdpV8MqdVJeBas6NBScBobWHUJJ3rS9asHwkTESwWiT1nNBP4ap327nApYtNtBa-rNIo5mOAUiEnD3",
+            "pic": ""
+        },
+        {
+            "title": "百度的最新相关信息",
+            "info": "",
+            "link": "http://www.baidu.com/link?url=sb4A0XJnJkoQIadqa0ch2i83LNUAJS5Dv5hD_fBRt7iTF5DWDW4pWUraAmNj-29d1mZWOPxarixHC7AohKGDBqnGVnXOijCNu3upGxlChkqUEp-JfYXn46S8ndCafdUq",
+            "pic": ""
+        },
+        {
+            "title": "百度知道 - 全球最大中文互动问答平台",
+            "info": "百度知道是由全球最大的中文搜索引擎百度自主研发、基于搜索的互动式知识问答分享平台。用户可以根据自身的需求,有针对性地提出问题;同时,这些答案又将作为搜索结果,...",
+            "link": "http://www.baidu.com/link?url=ZWggQTeANFoIbD3PMeJMcrC-ERq_6RpeNZBrvVg9T1-WZQwMd8-qaXDCl4vlcMSj",
+            "pic": ""
+        },
+        {
+            "title": "百度[BIDU]美股实时行情_雪球网",
+            "info": "",
+            "link": "http://www.baidu.com/link?url=sb4A0XJnJkoQIadqa0ch2n23NglVHfQIEGYLMbzRPQxYd2RUbn4Vwes9Na69JQMj",
+            "pic": ""
+        },
+        {
+            "title": "百度一下 你就知道的相关视频 在线观看_百度视频",
+            "info": "",
+            "link": "http://www.baidu.com/link?url=sb4A0XJnJkoQIadqa0ch2bjoZd3lq4GDbUX7X26rERzq6X0h-MPaXma42Zm7sF8mceDpqxOmfiPy2HINjUa7ejGfihA962G6qGDM339S4uSAlZD62tGT-Gh4EV-jYY3f1fZHuUJnFJN5ILozIh7bsa",
+            "pic": ""
+        },
+        {
+            "title": "百度图片-发现多彩世界",
+            "info": "百度图片使用世界前沿的人工智能技术,为用户甄选海量的高清美图,用更流畅、更快捷、更精准的搜索体验,带你去发现多彩的世界。",
+            "link": "http://www.baidu.com/link?url=HJHaM1YwmZaqOntPp-nQyTGSHa0nLL3rn2BWsk3MfxzKp-FW6f8Y4CmSnJIM0SwJ",
+            "pic": ""
+        }
+    ]
+}
