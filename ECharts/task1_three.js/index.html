@@ -7,6 +7,7 @@
 </head>
 <body>
 <script>
+    //渲染器
     var renderer;
     function initThree() {
         renderer=new THREE.WebGLRenderer();
@@ -14,51 +15,74 @@
         document.body.appendChild(renderer.domElement);
     }
 
+    //相机
     var camera;
     function initCamera() {
-       camera=new THREE.PerspectiveCamera(45, 4 / 3, 1, 1000);
+       camera=new THREE.PerspectiveCamera(45, window.innerWidth/ window.innerHeight, 1, 1000);
        // camera=new THREE.OrthographicCamera(-2.5,2.5,1.5,-1.5,1,10);
-        camera.position.set(4,3,5);
+        camera.position.set(90,80,100);
         camera.lookAt(new THREE.Vector3(0,0,0));
+
     }
 
+    //场景
     var scene;
     function initScene() {
         scene=new THREE.Scene();
     }
 
+    //物体
     var cube;
     function initObject() {
-        var geometry=new THREE.CubeGeometry(1.5,1,1);
+        var geometry=new THREE.CubeGeometry(60,30,30);
         cube=new THREE.Mesh(geometry,new THREE.MeshBasicMaterial({
             color: 0xcccccc,
-//            wireframe:true
+          // wireframe:true
         }));
-
+        cube.position.set(0,0,0);
         scene.add(cube);
-        var circle=new THREE.TorusGeometry(0.2, 0.05, 12, 18);
+
+        var circle=new THREE.TorusGeometry(7, 2, 12, 18);
          var circle1=new THREE.Mesh(circle,new THREE.MeshBasicMaterial({
-          //   color:0xcccccc,
-//            wireframe:true
+            color:0xc9c9c9,
         }));
         var circle2=new THREE.Mesh(circle,new THREE.MeshBasicMaterial({
-     //       color:0xcccccc,
-//            wireframe:true
+            color:0xc9c9c9,
         }));
-        circle1.position.set(0.1,-0.1,0.85);
-        circle2.position.set(0.7,-0.1,0.85);
+        var circle3=new THREE.Mesh(circle,new THREE.MeshBasicMaterial({
+            color:0xc9c9c9,
+        }));
+        var circle4=new THREE.Mesh(circle,new THREE.MeshBasicMaterial({
+            color:0xc9c9c9,
+        }));
+        circle1.position.set(-15,-15,15);
+        circle2.position.set(15,-15,15);
+        circle3.position.set(-15,-15,-15);
+        circle4.position.set(15,-15,-15);
         scene.add(circle1);
         scene.add(circle2);
+        scene.add(circle3);
+        scene.add(circle4);
 
-        var axes = new THREE.AxisHelper(10);   //打开坐标系
+        //打开坐标系
+        var axes = new THREE.AxisHelper(100);
         scene.add(axes);
+
+        //光源
+        var light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(8, 8, 10);
+        scene.add(light);
     }
 
+
+
+    //渲染
     function render() {
         renderer.clear();
         renderer.render(scene,camera);
     }
-    
+
+    //调用
     function ThreeStart() {
         initThree();
         initCamera();
