@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    .container{
+        padding: 100px 30%;
+    }
+    .box{
+        background-color: transparent;
+        width: 377px;
+        height: 383px;
+        position: relative;
+        overflow: hidden;
+    }
+    .box:before{
+        content: '';
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top:0;
+        background-image: url("bg.jpg");
+        transition: filter .5s;
+    }
+    .box:hover:before{
+        filter: blur(3px);
+    }
+
+    .border{
+        width: 337px;
+        height: 343px;
+        margin: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    .border:before{
+        content: '';
+        position: absolute;
+        left: 0;
+        top:50%;
+        width: 100%;
+        height: 0;
+        border: 3px solid ghostwhite;
+        border-width: 0 3px;
+        transition: all .8s;
+        /*因为上一层设置了overflow:hidden,所以如果宽度不包含padding,则溢出隐藏*/
+        box-sizing:border-box; /*很重要,如果去掉则只能显示出一条边*/
+    }
+    .border:hover:before{
+        top: 0;
+        height: 100%;
+    }
+    .border:after{
+        content: '';
+        position: absolute;
+        left: 50%;
+        top:0;
+        width: 0;
+        height: 100%;
+        border: 3px solid ghostwhite;
+        border-width: 3px 0 ;
+        transition: all .8s;
+        box-sizing:border-box;
+    }
+    .border:hover:after{
+        left: 0;
+        width: 100%;
+    }
+    #word{
+        font-size: 50px;
+        font-weight: 900;
+        margin: 120px auto;
+        text-align: center;
+        background-image: -webkit-linear-gradient(left,#3498db,#f47920 10%,#d71345 20%,#f7acbc 30%,#ffd400 40%,#3498db 50%,#f47920 60%,#d71345 70%,#f7acbc 80%,#ffd400 90%,#3498db);
+        /*最后100%的颜色要和开头0的颜色相等*/
+        -webkit-text-fill-color:transparent;
+        -webkit-background-clip: text;
+        /*将背景图宽度拉长至两倍，之前设置background-image的两份相同的颜色组，就是为了能在此拉长后只显示一份颜色组，另外超出的半截颜色组用来实现流光效果*/
+        -webkit-background-size: 200% 100%;
+        -webkit-animation: word 4s infinite linear;
+    }
+
+    @-webkit-keyframes word {
+        0% {background-position: 0 0;}
+        100% {background-position: -100% 0;}
+    }
+</style>
+<div class="container">
+        <div class="box">
+            <div class="border">
+                <div id="word">
+                    美人如斯
+                </div>
+            </div>
+        </div>
+</div>
+
+
+
+</body>
+</html>
