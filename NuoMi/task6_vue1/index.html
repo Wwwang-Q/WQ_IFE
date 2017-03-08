@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue1</title>
+</head>
+<body>
+<script>
+    function Observer(data) {
+        this.datas=data;
+        this.walk(data);
+    }
+    var p=Observer.prototype;
+
+    p.walk=function(obj){
+        for(var key in obj){
+            if(obj.hasOwnProperty(key)){
+                var val=obj[key];
+
+                if(typeof val==obj){
+                    new Observer(val);
+                }
+                this.convert(key,val);
+            }
+        }
+    }
+
+    p.convert=function(key,val){
+        Object.defineProperty(this.datas,key,{
+            enumerable:true,
+            configurable:true,
+            get:function () {
+                console.log("同学您访问了"+key+"的值");
+                return val;
+            },
+            set:function(newValue){
+                if(val===newValue) return;
+                 else val=newValue;
+                console.log("同学您改变了"+key+"的值。新"+key+"="+newValue);
+            }
+
+        })
+    }
+
+    var data={
+        user:{
+            name:"Jame",
+            age:"24"
+        },
+        address:{
+            city:"BeiJing"
+        }
+    };
+    var datas={
+        home:"lala"
+    }
+    var obj=new Observer(data);
+
+</script>
+</body>
+</html>
