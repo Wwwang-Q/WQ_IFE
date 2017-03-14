@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue2</title>
+</head>
+<body>
+<script>
+   function Observer(data) {
+       this.data=data;
+       this.eventBtn=new Event();
+       this.walk(data);
+   }
+
+   var p=Observer.prototype;
+   p.$watch=function (attr,callback) {
+       this.eventBtn.on(attr,callback);  //触发attr事件,执行callback方法。
+   }
+
+   p.walk=function (data) {
+       for(var key in data){
+           if(data.hasOwnProperty(key)){
+               var val=data[key];
+
+               if(typeof val==='object'){
+                   new Observer(val);
+               }
+
+               this.convert(key,val);
+           }
+       }
+
+   }
+
+   p.convert=function (key,val) {
+       var self=this;
+       Object.defineProperty(self.data,key,{
+           enumerable:true,
+           configurable:true,
+           get:function () {
+               console.log("同学您访问了"+key);
+               return val;
+           },
+           set:function(newValue){
+               console.log("同学您改变了"+key+"的值。新"+key+"="+newValue);
+               if(val===newValue) return;
+               else val=newValue;
+               self.eventBtn.emit(key,newValue);    //记得提前指定this,不然this指向改变,报错!
+           }
+       })
+   }
+
+   function Event() {
+       this.events={};
+   }
+
+   Event.prototype.on=function (attr,callback) {
+       var self=this;
+       if(!(attr in self.events)){
+           self.events[attr]=[];
+       }
+       self.events[attr].push(callback);
+       console.log(self.events[attr]);
+   }
+
+
+   Event.prototype.emit=function(attr){   //触发了没执行
+       var self=this; console.log(self.events[attr]);
+       var arg=Array.prototype.slice.call(arguments,1);
+       for(var i=0;i<self.events[attr].length;i++){
+          self.events[attr][i].apply(self,arg);
+       }
+   }
+
+   var data={
+       user:{
+           name:"Jame",
+           age:"24"
+       },
+       address:{
+           city:"BeiJing"
+       }
+   };
+   var obj=new Observer(data);
+    obj.$watch('age',function (age) {  console.log("lala");
+        console.log("我已经改变年龄啦。现在我的年龄是"+age);
+    })
+
+</script>
+</body>
+</html>
