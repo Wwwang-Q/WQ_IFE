@@ -6,6 +6,7 @@
 </head>
 <body>
 <script>
+    //为什么无法监听深层?
    function Observer(data) {
        this.data=data;
        this.eventBtn=new Event();
@@ -45,6 +46,11 @@
                console.log("同学您改变了"+key+"的值。新"+key+"="+newValue);
                if(val===newValue) return;
                else val=newValue;
+
+               // 深度遍历
+               if (typeof newValue === 'object') {
+                   new Observer(val)
+               }
                self.eventBtn.emit(key,newValue);    //记得提前指定this,不然this指向改变,报错!
            }
        })
@@ -63,27 +69,45 @@
        console.log(self.events[attr]);
    }
 
+//   Event.prototype.on = function (attr, callback) {
+//       if (this.events[attr]) {
+//           // 放进回调函数
+//           this.events[attr].push(callback)
+//       } else {
+//           this.events[attr] = [callback]
+//       }
+//       console.log(this.events[attr]);
+//   }
 
-   Event.prototype.emit=function(attr){   //触发了没执行
-       var self=this; console.log(self.events[attr]);
+   Event.prototype.emit=function(attr){
+       var self=this;
        var arg=Array.prototype.slice.call(arguments,1);
        for(var i=0;i<self.events[attr].length;i++){
           self.events[attr][i].apply(self,arg);
        }
    }
 
+//   // 执行多次回调
+//   Event.prototype.emit = function (attr, ...args) {console.log(this.events[attr]);
+//       // 执行$watch回调函数
+//       this.events[attr] && this.events[attr].forEach(item => {
+//           item(...args)
+//   })
+//   }
+
    var data={
        user:{
            name:"Jame",
-           age:"24"
+           age:20
        },
        address:{
            city:"BeiJing"
-       }
+       },
+
    };
    var obj=new Observer(data);
     obj.$watch('age',function (age) {  console.log("lala");
-        console.log("我已经改变年龄啦。现在我的年龄是"+age);
+        console.log(`我已经改变年龄啦。现在我的年龄是${age}`);
     })
 
 </script>
