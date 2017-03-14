@@ -16,6 +16,12 @@
         /*display: flex;*/
         /*flex-direction: column;*/
     }
+    label{
+        cursor: pointer;
+    }
+    label:hover{
+        text-decoration:underline;
+    }
     .panel{
         margin: 0px;
     }
@@ -34,20 +40,24 @@
     input{
         display: none;
     }
+    /*使用透明度来实现,也可以用visibility:hidden和visible*/
+    /*如果展开后的height想用auto,可用max-height.展开时正常,合上时似乎无效果*/
     .text{
         font-size: 15px;
         line-height: 20px;
         word-spacing:2px;
         opacity: 0;
         height: 0;
+        /*max-height: 0px;*/
         padding: 10px ;
         overflow: hidden;
-        transition: all .4s;
+        transition: all .5s;
     }
     input:checked~.text{
         opacity: 1;
+        /*max-height: 500px;*/
         height: 200px;
-        transition: all .4s;
+        transition: all .5s;
     }
 </style>
 <div class="container">
