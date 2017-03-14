@@ -14,16 +14,17 @@
 
     p.walk=function(obj){
         for(var key in obj){
+
             if(obj.hasOwnProperty(key)){
                 var val=obj[key];
 
-                if(typeof val==obj){
+                if(typeof val==='object'){
                     new Observer(val);
                 }
                 this.convert(key,val);
             }
         }
-    }
+    };
 
     p.convert=function(key,val){
         Object.defineProperty(this.datas,key,{
@@ -34,9 +35,10 @@
                 return val;
             },
             set:function(newValue){
-                if(val===newValue) return;
-                 else val=newValue;
                 console.log("同学您改变了"+key+"的值。新"+key+"="+newValue);
+                if(val===newValue) return;
+                else val=newValue;
+
             }
 
         })
