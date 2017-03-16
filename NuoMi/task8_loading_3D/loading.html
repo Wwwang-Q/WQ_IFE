@@ -6,7 +6,8 @@
 </head>
 <body>
 <style>
-
+    /*留了1px的空隙问题。
+       flex与position:absolute的布局问题*/
     #container{
         width: 100%;
         height: 500px;
@@ -17,14 +18,14 @@
         width: 180px;
         height: 180px;
         position: absolute;
-        left: calc(50% - 50px);
-        top:calc(50% - 50px);
-        /*transform: rotate(45deg);*/
+        left: calc(50% - 87px);
+        top: calc(50% - 155px);
+        transform: rotate(45deg);
     }
     #outer{
         position: absolute;
-        left: 50%;
-        top:50%;
+        left: calc(50% - 90px);
+        top:calc(50% - 90px);
         width: 180px;
         height: 180px;
         border-radius: 180px;
