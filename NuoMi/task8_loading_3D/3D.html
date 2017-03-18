@@ -5,6 +5,100 @@
     <title>3D</title>
 </head>
 <body>
+<style>
+    #stage{
 
+        width: 100%;
+        height: 500px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: inset 0 0 3px rgba(0,0,0,.35);
+
+    }
+    #container{
+        -webkit-transform-style: preserve-3D; //用在img的第一层父元素
+        -moz-transform-style:preserve-3D;
+        transform-style: preserve-3D;
+        perspective: 3500px;
+        -webkit-transition: -webkit-transform 1s;
+        -moz-transition: -moz-transform 1s;
+        transition: transform 1s;
+
+        position: relative;
+        /*margin-top: 100px;*/
+        width: 700px;
+        background-color: transparent;
+        height: 400px;
+
+    }
+    .picture{
+        width: 400px;
+        height: 285px;
+        position: absolute;
+        left: calc(50% - 200px);
+        top:calc(50% - 140px);
+        /*backface-visibility:hidden;*/
+
+        box-shadow: 0 1px 3px rgba(0,0,0,.5);
+
+        -webkit-transition: opacity 1s, -webkit-transform 1s;
+        -moz-transition: opacity 1s, -moz-transform 1s;
+        transition: opacity 1s, transform 1s;
+    }
+
+</style>
+<div id="stage">
+    <div id="container">
+        <img class="picture" id="pic1" src="img/1.jpeg" alt="" >
+        <img class="picture" id="pic2" src="img/2.jpg" alt="">
+        <img class="picture" id="pic3" src="img/3.jpg" alt="">
+        <img class="picture" id="pic4" src="img/4.jpeg" alt="">
+        <img class="picture" id="pic5" src="img/5.jpg" alt="">
+        <img class="picture" id="pic6" src="img/6.jpg" alt="">
+        <img class="picture" id="pic7" src="img/7.jpg" alt="">
+        <img class="picture" id="pic8" src="img/8.jpg" alt="">
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    (function(){
+        function $(selector) {
+            var element=document.querySelector(selector);
+            return element;
+        }
+        var $$=function (selector) {
+            return document.querySelectorAll(selector);
+        }
+
+        //初始化
+        var pic=$$('.picture');
+        for(var i=0;i<pic.length;i++){
+            pic[i].style.transform="rotateY("+i*45+"deg) translateZ(550px)";
+        }
+
+        //监听鼠标单击时
+        $('#stage').addEventListener('click',function (event) {
+            var target=event.target;
+
+            //若鼠标单击图片,则被点击图片切换到主位。
+            if(target.className=="picture"){
+                var tt=target.style.transform.match(/rotateY\((-?\d+)/)[1]; //读取被点击图片的旋转角度
+
+                //避免图片旋转角度大于180
+                var flag=Math.abs(tt%360);
+                if(parseInt(tt)<0) {var newt=(flag>180)?flag-360:flag;}
+                else{var newt=(flag>180)?(360-flag):-flag;}
+            }
+            else{var newt=45;}
+            for (var i=0;i<pic.length;i++){
+                var r=pic[i].style.transform.match(/rotateY\((-?\d+)/)[1];
+                pic[i].style.transform="rotateY("+(parseInt(r)+parseInt(newt))+"deg) translateZ(550px)";
+//                   console.log(i+"new:"+pic[i].style.transform);
+            }
+        })
+    })();
+    
+</script>
 </body>
 </html>
