@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue3</title>
+</head>
+<body>
+<script>
+    class Observer{
+
+        constructor(data){
+            this.data=data;
+            this.walk(data);
+            this.eventBtn={};
+        }
+
+        walk(data,path){
+            Object.keys(data).forEach((key)=>{
+                var val=data[key];
+                if(!path) path=key;
+                else path=path+key;   //当前项的路径
+                this.defineReactive(data,key,val,path);
+            })
+        }
+
+        defineReactive(data,key,val,path){
+
+            if(typeof val==="object"){
+                path=path+".";        //还是父级路径
+                this.walk(val,path);
+            }
+
+            Object.defineProperty(data,key,{
+                configurable: true,
+                enumerable: true,
+                get:()=>{
+                 //   console.log("同学您访问了"+key);
+                    return val;
+                },
+                set:(newValue)=>{
+                  //  console.log("同学您修改了"+key+"新的值是"+newValue);
+                    if(newValue==val) return;
+                    else val=newValue;
+                    this.$notify(path);
+                }
+            })
+        }
+
+        $notify(path){
+            var paths=path.split('.');        //分解成有多个key的数组
+           // console.log(paths);
+            var depaths=paths.map(function (key,index) {
+                if(index==0) return key;
+                var p="";
+                for(var i=index;i>0;i--){
+                    p="."+paths[i]+p;
+                }
+                return paths[0]+p;
+            });                                // 存储父路径子路径
+           // console.log(depaths);
+            depaths.forEach((path)=>{
+               var funcs=this.eventBtn[path];
+                if(funcs&&funcs.length){
+                    funcs.forEach(fn => fn && fn(this.$getValue(path)))
+                }
+            })
+        }
+
+
+        $getValue(exp){
+            const path = exp.split('.')
+            let val = this.data
+            path.forEach(k => val = val[k])
+            return val
+        }
+
+        $watch(key,func){
+            var self=this;
+            if(!(key in self.eventBtn)){
+                self.eventBtn[key]=[];
+            }
+            self.eventBtn[key].push(func);
+        }
+    }
+    var data={
+        user:{
+            name:"Jam"
+
+        },
+        address:{
+            city:"BeiJing"
+        },
+        age:"20"
+    };
+    var obj=new Observer(data);
+    obj.$watch('user',function (age) {
+        console.log(`我已经改变用户信息啦。`);
+    });
+    obj.$watch('user.name',function (name) {
+        console.log(`我已经改变名字啦。现在我的名字是${name}`);
+    });
+
+
+</script>
+</body>
+</html>

@@ -7,6 +7,7 @@
 <body>
 <script>
     //为什么无法监听深层?
+    //因为所有的事件都绑在了最上层的event,而调用的时候会调用每一层的eventBtn.
    function Observer(data) {
        this.data=data;
        this.eventBtn=new Event();
@@ -16,7 +17,7 @@
    var p=Observer.prototype;
    p.$watch=function (attr,callback) {
        this.eventBtn.on(attr,callback);  //触发attr事件,执行callback方法。
-   }
+   };
 
    p.walk=function (data) {
        for(var key in data){
@@ -26,12 +27,10 @@
                if(typeof val==='object'){
                    new Observer(val);
                }
-
                this.convert(key,val);
            }
        }
-
-   }
+   };
 
    p.convert=function (key,val) {
        var self=this;
@@ -52,22 +51,22 @@
                    new Observer(val)
                }
                self.eventBtn.emit(key,newValue);    //记得提前指定this,不然this指向改变,报错!
+             //  obj.eventBtn.emit(key,newValue);    //如果是第二题,把调用方式改成根元素。那不管监听哪个元素都有效。
            }
        })
-   }
+   };
 
    function Event() {
        this.events={};
    }
 
-   Event.prototype.on=function (attr,callback) {
+   Event.prototype.on=function (attr,callback) {  //这很明显是只绑在最上层了啊。怎么知道这个属性在哪一层呢?遍历?
        var self=this;
        if(!(attr in self.events)){
            self.events[attr]=[];
        }
        self.events[attr].push(callback);
-       console.log(self.events[attr]);
-   }
+   };
 
 //   Event.prototype.on = function (attr, callback) {
 //       if (this.events[attr]) {
@@ -80,12 +79,14 @@
 //   }
 
    Event.prototype.emit=function(attr){
-       var self=this;
+       var self=this;console.log(this);
        var arg=Array.prototype.slice.call(arguments,1);
-       for(var i=0;i<self.events[attr].length;i++){
-          self.events[attr][i].apply(self,arg);
+       if(attr in self.events){
+           for(var i=0;i<self.events[attr].length;i++){
+               self.events[attr][i].apply(self,arg);
+           }
        }
-   }
+   };
 
 //   // 执行多次回调
 //   Event.prototype.emit = function (attr, ...args) {console.log(this.events[attr]);
@@ -97,18 +98,17 @@
 
    var data={
        user:{
-           name:"Jame",
-           age:20
+           name:"Jame"
        },
        address:{
            city:"BeiJing"
        },
-
+       age:"20"
    };
    var obj=new Observer(data);
-    obj.$watch('age',function (age) {  console.log("lala");
+    obj.$watch('age',function (age) {
         console.log(`我已经改变年龄啦。现在我的年龄是${age}`);
-    })
+    });
 
 </script>
 </body>
