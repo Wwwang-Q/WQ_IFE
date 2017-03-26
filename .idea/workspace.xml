@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ea30b974-30f7-45c9-b4a1-a05a2d82e312" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/NuoMi/task4_phantomjs/task2.js" afterPath="$PROJECT_DIR$/NuoMi/task4_phantomjs/task2.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/NuoMi/task6_vue1/index4.html" afterPath="$PROJECT_DIR$/NuoMi/task6_vue1/index4.html" />
     </list>
     <ignored path="WQ_IFE.iws" />
@@ -43,8 +41,8 @@
       <file leaf-file-name="index4.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/NuoMi/task6_vue1/index4.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="18" column="56" selection-start-line="18" selection-start-column="56" selection-end-line="18" selection-end-column="56" />
+            <state relative-caret-position="420">
+              <caret line="27" column="30" selection-start-line="27" selection-start-column="30" selection-end-line="27" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -336,12 +334,12 @@
       <workItem from="1487918350254" duration="49174000" />
       <workItem from="1488418691515" duration="98330000" />
       <workItem from="1489558717284" duration="52384000" />
-      <workItem from="1490415385691" duration="18321000" />
+      <workItem from="1490415385691" duration="19022000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="218209000" />
+    <option name="totallyTimeSpent" value="218910000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="58" y="23" width="1382" height="797" extended-state="0" />
@@ -625,8 +623,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/NuoMi/task6_vue1/index4.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="18" column="56" selection-start-line="18" selection-start-column="56" selection-end-line="18" selection-end-column="56" />
+        <state relative-caret-position="420">
+          <caret line="27" column="30" selection-start-line="27" selection-start-column="30" selection-end-line="27" selection-end-column="30" />
           <folding />
         </state>
       </provider>

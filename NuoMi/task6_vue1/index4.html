@@ -12,9 +12,14 @@
 
 <script>
     function Vue(obj) {
-        var tmp=obj.el;
+        this.tmp=obj.el;
         this.data=obj.data;
-        var targetObj=document.querySelector(tmp);
+        this.init();
+    }
+
+    Vue.prototype.init=function () {
+
+        var targetObj=document.querySelector(this.tmp);
         var target=targetObj.innerHTML;
         var arrs=target.match(/{{[a-zA-Z_0-9.]+}}/g);       //匹配模板中所有目标,将目标路径存入数组
 
@@ -24,7 +29,6 @@
             paths.forEach((key)=>{        //循环key取出目标数据
                 val=val[key];
             })
-            //console.log(val);
             var re=new RegExp(path);
             target=target.replace(re, val);        //将模板中{}的替换为数据
         })
