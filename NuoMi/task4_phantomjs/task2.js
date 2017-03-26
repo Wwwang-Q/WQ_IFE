@@ -7,7 +7,7 @@ var page =require('webpage').create();
 var system=require('system');
 var fs=require('fs');
 var key=system.args[1];
-var device=system.args[2];
+var device=system.args[2]||"pc";
 var url="https://www.baidu.com/s?wd="+encodeURI(key);
 var time=Date.now();
 var data={};
@@ -40,16 +40,33 @@ page.open(url,function (status) {
         page.includeJs("https://code.jquery.com/jquery-3.1.1.min.js",function () {
             data=page.evaluate(function (time,key,device){
                 var tmp=[];
-                var total=$('.c-container');
-                for(var i=0;i<total.length;i++){
-                    var list={};
-                    list.title=$(total[i]).find('.t').text().trim();
-                    list.info=$(total[i]).find('.c-abstract').text();
-                    list.link=$(total[i]).find('.t a').attr('href');
-                    var pic=$(total[i]).find('c-img');
-                    list.pic=pic.length?pic.attr('scr'):'';
-                    tmp.push(list);
+                if(device=="ipad"||device=="pc"){
+                    var total=$('.c-container');
+                    for(var i=0;i<total.length;i++){
+                        var list={};
+                        list.title=$(total[i]).find('.t').text().trim();
+                        list.info=$(total[i]).find('.c-abstract').text();
+                        list.link=$(total[i]).find('.t a').attr('href');
+                        var pic=$(total[i]).find('c-img');
+                        list.pic=pic.length?pic.attr('scr'):'';
+                        tmp.push(list);
+                    }
                 }
+                else if(device=="iphone5"||device=="iphone6"){
+                    var total=$('.c-result');
+                    for(var i=0;i<total.length;i++){
+                        var list={};
+                        list.title=$(total[i]).find('.c-title').text().trim();
+                        list.info=$(total[i]).find('.c-line-clamp3').text();
+                        list.link=$(total[i]).find('.c-blocka').attr('href');
+                        var pic=$(total[i]).find('.c-img-s img');
+                        list.pic=pic.length?pic.attr('scr'):'';
+                        tmp.push(list);
+
+                    }
+                }
+                else return "wrong device type!";
+
 
                 return JSON.stringify({
                     code:1,
