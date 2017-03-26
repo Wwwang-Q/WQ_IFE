@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue4</title>
+</head>
+<body>
+<div id="app">
+    <p>姓名：{{user.name}}</p>
+    <p>年龄：{{user.age}}</p>
+</div>
+
+<script>
+    function Vue(obj) {
+        var tmp=obj.el;
+        this.data=obj.data;
+        var targetObj=getObj(tmp);
+        var target=targetObj.innerHTML;
+        var arrs=target.match(/{{[a-zA-Z_0-9.]+}}/g);       //匹配模板中所有目标,将目标路径存入数组
+
+        arrs.forEach((path)=>{
+            var paths=path.replace(/[{{}}]/g,"").split('.');      //去掉括号
+            var val=this.data;
+            paths.forEach((key)=>{        //循环key取出目标数据
+                val=val[key];
+            })
+            //console.log(val);
+            var re=new RegExp(path);
+            target=target.replace(re, val);        //将模板中{}的替换为数据
+        })
+        targetObj.innerHTML=target;
+    }
+
+    function getObj(name) {
+        var obj;
+        var reg1=/^#(\w+)/;
+        var reg2=/^.(\w+)/;
+        if(reg1.test(name)) obj=document.getElementById(name.match(reg1)[1]);
+        else if(reg2.test(name)) obj=document.getElementsByClassName(name.match(reg2)[1]);
+        return obj;
+    }
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            user: {
+                name: 'youngwind',
+                age: 25
+            }
+        }
+    });
+
+
+</script>
+</body>
+</html>
