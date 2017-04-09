@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue5</title>
+</head>
+<body>
+<div id="app">
+    <p>姓名：{{user.name}}</p>
+    <p>年龄：{{user.age}}</p>
+</div>
+
+<script>
+
+    /*在数据顶部注册一个事件,只要内部有数据改变,冒泡到data层,即触发notify.
+    * 第一次渲染结束后,就没有{{user.name}}这些路径了。所以将原始模板存在对象属性中,每次更新调用原始模板。无法局部更新*/
+
+   class Bue{
+       constructor(obj){
+           this.datas=obj;
+           this.tmp=obj.el;
+           this.targetObj=document.querySelector(this.tmp);
+           this.target=this.targetObj.innerHTML;
+           this.observer=new Observer(obj);
+           this.init(this.target);
+           this.observer.$watch('data',()=> {
+               this.init(this.target);
+               console.log("更新了模板");
+           });
+       }
+
+       /*渲染*/
+       init(target) {
+           var arrs = target.match(/{{[a-zA-Z_0-9.]+}}/g);       //匹配模板中所有目标,将目标路径存入数组
+           console.log(arrs);
+           arrs.forEach((path)=> {
+               var paths = path.replace(/[{{}}]/g, "").split('.');      //去掉括号
+               var val = this.datas.data;
+               paths.forEach((key)=> {        //循环key取出目标数据
+                   val = val[key];
+               })
+               var re = new RegExp(path);
+               target = target.replace(re, val);        //将模板中{}的替换为数据
+           })
+           document.querySelector(this.tmp).innerHTML = target;
+       }
+   }
+
+    class Observer{
+
+        constructor(obj){
+            this.value=obj;
+            this.eventBtn={};
+            this.walk(obj);
+        }
+
+        walk(obj){
+            Object.keys(obj).forEach((key)=>{ console.log(key);
+                if(!obj.hasOwnProperty(key)) return;
+                var val=obj[key];
+                this.observe(key,val);
+                this.defineReactive(obj,key,val);
+            })
+        }
+
+        observe(key,val){
+            if (typeof val==="object"){
+                var ob=new Observer(val);
+            }
+            if(!ob) return;
+            ob.parent={
+                key,
+                ob:this
+            }
+            console.log(ob.parent);
+        }
+
+        defineReactive(data,key,val){
+
+            Object.defineProperty(data,key,{
+                configurable: true,
+                enumerable: true,
+                get:()=>{
+              //         console.log("同学您访问了"+key);
+                    return val;
+                },
+                set:(newValue)=>{
+                   //   console.log("同学您修改了"+key+"新的值是"+newValue);
+                    if(newValue==val) return;
+                    else val=newValue;
+                    this.$notify(key,val);
+                }
+            })
+
+        }
+
+        $notify(key,val){console.log(key);
+            this.$emit(key,val);
+            var parent=this.parent;
+            if(!parent) return;
+            var ob=parent.ob;
+            ob.$notify(parent.key,val);
+        }
+
+        $emit(key,val){
+            if(!(key in this.eventBtn)) return;
+            var fns=this.eventBtn[key];
+            fns.forEach((fn)=>{
+                fn.call(this,val);
+            })
+
+        }
+
+     $watch(key,func){
+            var self=this;
+            if(!(key in self.eventBtn)){
+                self.eventBtn[key]=[];
+            }
+            self.eventBtn[key].push(func);
+        }
+    }
+
+    var app = new Bue({
+        el: '#app',
+        data: {
+            user: {
+                name: 'youngwind',
+                age: 25
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+
+<ul>
+    <li>Coffee</li>
+    <li>Tea</li>
+</ul>
+
+<ul>
+    <li>12</li>
+    <li>34</li>
+</ul>
+<p id="demo">单击按钮更改列表项,使用createDocumentFragment方法,然后在列表的最后一个孩子添加列表项。</p>
+<button onclick="myFunction()">点我</button>
+
+<!--<script>-->
+    <!--var myFunction= function (){-->
+        <!--var i=1;-->
+        <!--var d=document.createDocumentFragment();-->
+        <!--console.log(d);-->
+        <!--console.log(document.getElementsByTagName("LI")[0]);-->
+
+        <!--d.appendChild(document.getElementsByTagName("LI")[0]);-->
+
+        <!--console.log(d.childNodes[0]);-->
+        <!--console.log(d.childNodes[0].childNodes[0]);-->
+
+        <!--d.childNodes[0].childNodes[0].nodeValue="Milk";          //为什么看起来所有的console都是打印语句执行结束后的结果?-->
+
+        <!--console.log(d);-->
+        <!--console.log(document.getElementsByTagName("UL")[0]);-->
+
+        <!--document.getElementsByTagName("UL")[0].appendChild(d);-->
+    <!--};-->
+
+<!--</script>-->
+
+<script>
+    var i=1
+    function myFunction(){
+        var d=document.createDocumentFragment();
+        d.appendChild(document.getElementsByTagName("LI")[0]);
+        d.childNodes[0].childNodes[0].nodeValue="Milk"+i;
+        i++;
+        document.getElementsByTagName("UL")[0].appendChild(d);
+    };
+
+</script>
+
+<!--<script>-->
+<!--function myFunction(){-->
+<!--var d=document.createDocumentFragment();-->
+<!--d.appendChild(document.getElementsByTagName("LI")[0]);-->
+<!--document.getElementsByTagName("UL")[1].appendChild(d);-->
+<!--};-->
+<!--</script>-->
+
+</body>
+</html>

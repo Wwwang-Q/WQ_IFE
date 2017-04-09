@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue5.3</title>
+</head>
+<body>
+<div id="app">
+    <p>姓名：{{user.name}}, 城市:{{city.home}}</p>
+    <p>年龄：{{user.age}}</p>
+</div>
+
+<script>
+    /*方法二是遍历directives的expression,遇到与path相同的,调用update更新值。
+    方法三是将每个directive的update方法藏到了watcher.cb中。
+    更新时,逐层取得binding,在this._subs中存着所有的watcher.都是expression相同的(代表重复出现几次?)。
+    * 还不完善,持续更新*/
+
+    class Bue{
+
+        constructor(options){
+            this._init(options);
+        }
+
+        _init(options){
+            this.$options=options;
+            this.$data=options.data||{};
+            this.$el=document.querySelector(options.el);
+            this._directives=[];
+            //_.extend(this.$options, this.constructor.options);   //?????
+            this._initData(options.data);
+            this._initBindings();
+            if(this.$el){
+                this.$mount();
+            }
+        }
+
+        $mount(){ console.log('hh');
+            this._compile();
+        }
+
+        _initData(data){
+            this.observer=Observer.prototype.create(data);
+        }
+
+        _initBindings(){
+            this._rootBinding=new Binding();
+            this.observer.on('set',this._updateBindingAt.bind(this));
+        }
+
+        _createBindingAt(path){
+            let b=this._rootBinding;
+            let paths=path.value.split('.');
+            paths.forEach((key)=>{
+                b=b[key]=b._addChild(key);  //3个连等??binding有key??
+            })
+            return b;
+        }
+
+        _updateBindingAt(){
+            let path=arguments[1];
+            let patharr=path.split('.');
+            let r=this._rootBinding;
+            patharr.forEach((key)=>{
+                r=r[key];
+            });
+            let subs=r._subs;
+            subs.forEach((watcher)=>{console.log(watcher);
+                watcher.cb.call(watcher); //??函数的作用域是watcher??
+            });
+        }
+
+        _compile(){
+            this._compileNode(this.$el);
+        }
+
+        _compileNode(node){console.log(node);
+            switch (node.nodeType){
+                case 1:
+                    this._compileElement(node);
+                    break;
+                case 3:
+                    this._compileText(node);
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        _compileElement(node){
+            console.log(node.childNodes);
+            if(node.hasChildNodes()){
+                Array.from(node.childNodes).forEach(this._compileNode,this); //arr.forEach(function callback(currentValue, index, array){}[, thisArg]);
+            }
+        }
+
+//        _compileText(node){
+//            var reg=/{{[1-9a-zA-Z.]+}}/g;
+//            var nodeValue=node.nodeValue;
+//            var expressions=nodeValue.match(reg);
+//            expressions.forEach((expression)=>{
+//                var expression=expression.replace(/[{}]/g,"");
+//                var el=document.createTextNode('');
+//                node.parentNode.insertBefore(el,node);
+//                var dirs=this._directives;
+//                dirs.push( new Directives('text',expression,el,nodeValue,this));
+//
+//            });
+//        }
+
+       _compileText(node) {
+        let tokens = this.parse(node.nodeValue);
+           console.log(tokens);   //怎么分开的。厉害了
+        if (!tokens) return;
+
+        tokens.forEach((token) => {
+            if (token.tag) {
+                // 指令节点
+                let value = token.value;
+                let el = document.createTextNode('');
+                node.parentNode.insertBefore(el, node);
+                this._bindDirective('text', value, el);
+            } else {
+                // 普通文本节点
+                let el = document.createTextNode(token.value);
+                node.parentNode.insertBefore(el, node);
+            }
+        });
+
+           node.parentNode.removeChild(node);
+    };
+
+        _bindDirective(name,value,node){ console.log(node);
+            let descriptors = this.parse(value);
+            let dirs = this._directives;
+            descriptors.forEach((descriptor) => {console.log(descriptor);
+                let a=new Directive(name, node, this, descriptor);
+                dirs.push(
+                        a
+                )
+
+            });
+        }
+
+        parse(text) {
+            console.log(text);
+        let tokens = [];
+        let tagRE = /\{?\{\{(.+?)\}\}\}?/g;
+        let match, index, value, lastIndex = 0;
+        while (match = tagRE.exec(text)) {
+            index = match.index;
+            if (index > lastIndex) {
+                tokens.push({
+                    value: text.slice(lastIndex, index)    //加上了value????
+                });
+            }
+            index = match.index;
+            value = match[1];
+            tokens.push({
+                tag: true,
+                value: value.trim()
+            });
+            lastIndex = index + match[0].length;
+        }
+
+        if (lastIndex < text.length - 1) {
+            tokens.push({
+                value: text.slice(lastIndex)
+            });
+        }
+       // console.log(tokens)
+        return tokens;
+    }
+
+    }
+
+    class Binding{
+
+        constructor(){
+            this._subs=[];
+        }
+
+        _addChild(key){
+            return this[key]||new Binding();  //如果键值有对应的Binding就返回,无就新建
+        }
+
+        _addSub(sub){
+            this._subs.push(sub);   //sub指的是watcher,将watcher塞到subs中
+        }
+
+
+    }
+
+    class Watcher{
+
+        constructor(vm,expression,cb,ctx){
+            this.vm=vm;
+            this.expression=expression;
+            this.cb=cb;               //{Function} 当对应的数据更新的时候执行的回调函数
+            this.ctx=ctx||vm;         //{Object} 回调函数执行上下文
+            this.addDep(expression);
+        }
+
+        addDep(expression){
+            let vm=this.vm;
+            let binding=vm._createBindingAt(expression); //返回对应层级的binding.
+            binding._addSub(this);             //每创建一个watcher,就把它存入对应的binding中
+        }
+
+        update(){
+            this.cb.call(this.ctx,arguments);  //arguments是啥?
+        }
+
+    }
+
+    class Directive{
+
+        constructor(name,el,vm,expression){  //new Directive(name, node, this, descriptor)
+            this.name=name;
+            this.expression=expression;
+            this.el=el;
+            //this.nodeValue=nodeValue;
+            this.vm=vm;
+            //this._initDef();
+            this._bind();
+        }
+
+        _initDef(){ console.log(this.vm);
+            let def=this.vm.$options._directives[this.name];
+            _.extend(this,def);    //????什么意思
+        }
+
+        _bind(){
+            if(!this.expression) return;
+            this._watcher=new Watcher(
+                    this.vm,
+                    this.expression,
+                    this._update,
+                    this         //对应ctx,directive是每个watcher的作用域
+            )
+            console.log(this._update);
+            this.update();
+        }
+
+        _update(){
+            this.update();  //这。。。为什么不直接用update()呢?
+        }
+
+        update(){
+            var expressions=this.expression.value.split('.');  //要加上value??
+            var val=this.vm.$data;
+            expressions.forEach((key)=>{
+                val=val[key];
+            });
+            this.el.nodeValue=val;
+        }
+    }
+
+    class Observer{
+
+        constructor(data){
+            this.$value=data;
+            this.eventBtn=[];
+            this.walk(data);
+        }
+
+        walk(obj){
+            Object.keys(obj).forEach((key)=>{
+                if(!obj.hasOwnProperty(key)) return;
+                var val=obj[key];
+                this.observe(key,val);
+                this.convert(key,val);
+            })
+        }
+
+        on(event,fn){
+            if(!this.eventBtn[event]) this.eventBtn[event]=[];
+            this.eventBtn[event] .push(fn);
+            // 这里return this是为了实现.on(...).on(...)这样的级联调用
+            return this;            //???返回的还是原来的元素是吗?
+        }
+
+        off(event,fn){
+            //取消所有订阅事件
+            if(!arguments.length){
+                this.eventBtn=[];
+                return this;
+            }
+
+            if(!this.eventBtn[event]) return this;
+            //取消特定事件
+            if(arguments.length==1){
+                var event=arguments[0];
+                delete this.eventBtn[event];
+                return this;
+            }
+            //取消特定事件的特定回调函数
+            let callbacks=this.eventBtn[event];
+            callbacks.forEach((cb,i)=>{
+                if(cb===fn)
+                    callbacks.splice(i,1);
+                return this;
+            })
+
+        }
+
+        notify(event,key,val){
+            this.emit(event,key,val);
+            var parent=this.parent;
+            if(!parent) return;
+            var ob=parent.ob;
+            key=`${parent.key}.${key}`;
+            //key=parent.key+'.'+key;
+            ob.notify(event,key,val);
+        }
+        emit(event,key,val){
+            if(!(event in this.eventBtn)) return;
+            var fns=this.eventBtn[event];
+            fns=fns.slice(0);
+            fns.forEach((fn)=>{
+                fn.apply(this,arguments);
+            })
+        }
+
+        observe(key,val){
+            var ob=this.create(val);
+            if(!ob) return;
+            ob.parent={
+                key:key,
+                ob:this
+            }
+        }
+        convert(key,val){
+            Object.defineProperty(this.$value,key,{
+                enumerable:true,
+                configurable:true,
+                get:()=>{
+                    return val
+                },
+                set:(newVal)=>{
+                    if(newVal!=val) val=newVal;
+                    console.log("同学您已经修改了"+key+"的值。")
+                    this.notify('set',key,val);
+                    return val;
+                }
+            })
+        }
+        create(val){
+            if(typeof val==="object"){
+                return new Observer(val);
+            }
+        }
+    }
+
+    var app = new Bue({
+        el: '#app',
+        data: {
+            user: {
+                name: 'youngwind',
+                age: 25
+            },
+            city:{
+                home:'BeiJing'
+            }
+
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>component</title>
+</head>
+<body>
+<script src="vue.js"></script>
+<div id="example">
+    <my-component></my-component>
+    <my-component></my-component>
+    <my-component></my-component>
+
+</div>
+<script>
+    var Child={
+        template:'<button v-on:click="counter++">{{counter}}</button>',
+        data:function () {
+            return {
+                counter:0
+            }
+        }
+    }
+    var data={
+        counter:0
+    }
+    new Vue({
+        el:"#example",
+        components:{
+            'my-component':Child
+        }
+
+    })
+</script>
+</body>
+</html>

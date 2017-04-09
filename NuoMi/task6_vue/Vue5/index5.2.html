@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue5.2</title>
+</head>
+<body>
+<div id="app">
+    <p>姓名：{{user.name}}</p>
+    <p>年龄：{{user.age}}</p>
+</div>
+
+<!--<div id="app">-->
+    <!--<p>姓名：{{user.name}},城市:{{city.home}}</p>-->
+    <!--<p>年龄：{{user.age}}</p>-->
+<!--</div>-->
+
+<script>
+    /*实现思路:
+    在遍历DOM模板的过程中，当遍历到文本节点："{{name}}"的时候，会先将其中的表达式"name"匹配出来，
+    然后新建一个空的textNode，也就是上面的this.el，插入到这个文本节点的前面，最后remove掉这个文本节点。
+    这样，就实现了用一个程序生成的textNode代替原来的textNode，从而实现每个textNode都跟它的表达式一一对应起来。*/
+    /*存在问题:
+    每次数据发生改变的时候，都需要循环_directive数组，匹配expression的值才能找到对应的指令，最好是能够做到对象键值索引的那种。*/
+    /*实现中的问题:
+    * 1、如果按照梁大大博客中的代码,节点中除了{{expression}}的其他文字都没了。。。作为一个节点都remove了。难道只能全存起来再正则后赋给value?
+    * 2、按现在的代码,如果一个文本节点里有多个{{expression}}出错?
+    * 与方法一都是在最外层挂监听,区别是,方法一每次都渲染全部,方法二可根据路径只改变对应的节点 */
+
+    class Bue{
+
+        constructor(options){
+            this.$options=options;
+            this.$data=options.data;
+            this.$el=document.querySelector(options.el); //模板元素
+            this.$template=this.$el.cloneNode(true);      //克隆模板??
+            this._directives=[];
+            this.observer=Observer.create(this.$data);          //为什么不直接 new Observer呢?
+           // this.observer=new Observer(this.$data);            //也是可行的。
+            //this.observer = this.observer.create(this.$data);   //??this.observer?
+            this.observer.on('set',this._updateBindingAt.bind(this));   //bind this??
+            //this.observer.on('set',()=>console.log("hhh"));    //挂在最外层
+            this.$mount();    //渲染挂载
+        }
+
+        _updateBindingAt(){
+            var path=arguments[1];
+            var directives=this._directives;
+            directives.forEach((directive)=>{     //在emit触发函数中传入path和val
+                if(directive.expression!==path) return;
+                directive.update();
+            })
+        }
+
+        $mount(){
+            console.log("开始渲染啦!");
+            this._compile();  // compile系列挂在Bue中。_updateBindingAt,update()挂在directive上。
+        };
+
+        _compile(){
+            this._compileNode(this.$el);
+        }
+        _compileNode(node){
+            switch (node.nodeType){
+                case 1:
+                    this._compileElement(node);
+                    break;
+                case 3:
+                    this._compileText(node);
+                    break;
+                default:
+                    return;
+            }
+        }
+//        _compileElement(node){
+//            if(!node.hasChildNodes()) this._compileText(node);
+//            var nodes=node.childNodes;
+//            nodes.forEach((node)=>{
+//                this. _compileElement(node);
+//            })
+//        }
+        _compileElement(node){
+            //console.log(node.childNodes);
+            if(node.hasChildNodes()){
+                Array.from(node.childNodes).forEach(this._compileNode,this); //arr.forEach(function callback(currentValue, index, array){}[, thisArg]);
+            }
+        }
+
+
+        _compileText(node){
+            //console.log(node);
+            let reg=/{{[a-zA-Z_0-9.]+}}/g;
+            let nodeValue=node.nodeValue;
+            if (!nodeValue) return;
+           // console.log(nodeValue);
+            let expressions=nodeValue.match(reg);  //匹配所有的{{}}
+            if (!expressions) return;
+
+            expressions.forEach((expression)=>{ console.log(expression);
+               let property=expression.replace(/[{}]/g,"");
+               let el=document.createTextNode(nodeValue);
+                node.parentNode.insertBefore(el,node);  //???node是匹配到的{{}}吗?不是吧?
+                this._bindDirective('text',property,el,nodeValue);
+            })
+            node.parentNode.removeChild(node);
+        }
+
+        _bindDirective(name,expression,node,nodeValue){
+            var dirs=this._directives;
+            dirs.push(new Directive(name,expression,node,nodeValue,this))
+        }
+
+    }
+
+    class Directive{
+
+        constructor(name,expression,el,nodeValue,vm){
+            this.name=name;
+            this.el=el;
+            this.vm=vm; //???指代bue实例
+            this.expression=expression;
+            this.nodeValue=nodeValue;
+            this.attr="nodeValue";
+            this.update();
+        }
+
+        update(){
+            var expressions=this.expression.split('.');
+            var value=this.vm.$data;
+            expressions.forEach((key)=>{
+                value=value[key];
+            })
+            var reg=new RegExp("{{"+this.expression+"}}");
+            var noValue=this.nodeValue.replace(reg,value);
+            this.el[this.attr]=noValue;
+            console.log(`更新了Dom-${this.expression}`);
+        }
+    }
+    
+    class Observer{
+
+        constructor(value){
+            this.value=value;
+            //this._cbs=[];
+            this.walk(value);
+        }
+
+        walk(obj){
+            Object.keys(obj).forEach((key)=>{
+                if(!obj.hasOwnProperty(key)) return;
+                var val=obj[key];
+                this.observe(key,val);   //找父节点
+                this.convert(key,val);
+            })
+        }
+
+        observe(key,val){
+            var ob=Observer.create(val);
+            if(!ob) return;              //ob已经是最深层,不需要用它来作为其他元素的父级
+            ob.parent={
+                key,
+                ob:this                  //this指向walk的obj
+            }
+        }
+
+        convert(key,val){
+            Object.defineProperty(this.value,key,{
+                enumerable:true,
+                configurable:true,
+                get:()=>{
+                    return val
+                },
+                set:(newVal)=>{
+                    if(newVal==val) return;
+                    val=newVal;
+                    this.notify('set',key,val);
+                   // this.notify(`set:${key}`, key, newVal);  ??
+                }
+            })
+        }
+
+        on(event,fn){
+            this._cbs = this._cbs || {};
+            if (!this._cbs[event]) {
+                this._cbs[event] = [];
+            }
+            this._cbs[event].push(fn);
+
+            // 这里return this是为了实现.on(...).on(...)这样的级联调用
+            return this;            //???返回的还是原来的元素是吗?
+        }
+
+        notify(event,path,val){
+            this.emit(event, path, val);
+            let parent=this.parent;
+            if(!parent) return;
+            let ob=parent.ob;             //这几步事实上只是将notify的作用对象换到上一级
+            path=parent.key+'.'+path;     //通知的是user.name不是name
+            ob.notify(event,path,val);
+        }
+        emit(event,path,val){
+            this._cbs = this._cbs || {};
+            let callbacks = this._cbs[event];
+            if (!callbacks) return;
+            callbacks = callbacks.slice(0);   //保证了不修改原数组
+            callbacks.forEach((cb, i) => {
+              //  console.log(cb==callbacks[i]); //true
+                callbacks[i].apply(this, arguments);  //向cb函数中传入path和val.
+            });
+        }
+    }
+    Observer.create=function (val) {
+        if(typeof val==="object"){
+            return new Observer(val);
+        }
+    }
+    var app = new Bue({
+        el: '#app',
+        data: {
+            user: {
+                name: 'youngwind',
+                age: 25
+            },
+            city:{
+                home:'BeiJing'
+            }
+
+        }
+    });
+
+
+</script>
+</body>
+</html>
