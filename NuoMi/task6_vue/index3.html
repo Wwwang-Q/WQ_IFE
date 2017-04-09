@@ -17,13 +17,14 @@
         walk(data,path){
             Object.keys(data).forEach((key)=>{
                 var val=data[key];
-                if(!path) path=key;
-                else path=path+key;   //当前项的路径
                 this.defineReactive(data,key,val,path);
             })
         }
 
         defineReactive(data,key,val,path){
+
+            if(!path) path=key;     //这两句不能写在walk函数里!!会造成path错乱。
+            else path=path+key;   //当前项的路径
 
             if(typeof val==="object"){
                 path=path+".";        //还是父级路径
@@ -48,7 +49,7 @@
 
         $notify(path){
             var paths=path.split('.');        //分解成有多个key的数组
-           // console.log(paths);
+            console.log(paths);
             var depaths=paths.map(function (key,index) {
                 if(index==0) return key;
                 var p="";
@@ -83,23 +84,25 @@
         }
     }
     var data={
-        user:{
-            name:"Jam"
+            user: {
+                name: 'youngwind',
+                age: 25
+            },
+            city:{
+                beijing:"capital"
+            }
 
-        },
-        address:{
-            city:"BeiJing"
-        },
-        age:"20"
     };
+
     var obj=new Observer(data);
-    obj.$watch('user',function (age) {
+
+    obj.$watch('user',function () {
         console.log(`我已经改变用户信息啦。`);
     });
     obj.$watch('user.name',function (name) {
         console.log(`我已经改变名字啦。现在我的名字是${name}`);
     });
-
+/*都在最外层注册事件,触发user.name的时候会发生冒泡,触发user的事件*/
 
 </script>
 </body>
