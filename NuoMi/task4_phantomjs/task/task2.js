@@ -79,7 +79,7 @@ page.open(url,function (status) {
                 },null,4);
 
             },time,key,device);
-            fs.write("task2.json",data,'w');
+            fs.write("task3.json",data,'w');
             console.log(data);
             phantom.exit();
         });
