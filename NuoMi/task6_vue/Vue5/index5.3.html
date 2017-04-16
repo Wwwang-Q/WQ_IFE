@@ -6,14 +6,14 @@
 </head>
 <body>
 <div id="app">
-    <p>姓名：{{user.name}}, 城市:{{city.home}}</p>
+    <p>姓名：{{user.name}}, 城市:{{city.home}},年龄：{{user.age}}</p>
     <p>年龄：{{user.age}}</p>
 </div>
 
 <script>
     /*方法二是遍历directives的expression,遇到与path相同的,调用update更新值。
     方法三是将每个directive的update方法藏到了watcher.cb中。
-    更新时,逐层取得binding,在this._subs中存着所有的watcher.都是expression相同的(代表重复出现几次?)。
+    更新时,逐层取得binding,在this._subs中存着所有的watcher.都是expression相同的(代表重复出现几次)。
     * 还不完善,持续更新*/
 
     class Bue{
@@ -74,7 +74,7 @@
             this._compileNode(this.$el);
         }
 
-        _compileNode(node){console.log(node);
+        _compileNode(node){
             switch (node.nodeType){
                 case 1:
                     this._compileElement(node);
@@ -88,7 +88,7 @@
         }
 
         _compileElement(node){
-            console.log(node.childNodes);
+           // console.log(node.childNodes);
             if(node.hasChildNodes()){
                 Array.from(node.childNodes).forEach(this._compileNode,this); //arr.forEach(function callback(currentValue, index, array){}[, thisArg]);
             }
@@ -110,7 +110,7 @@
 
        _compileText(node) {
         let tokens = this.parse(node.nodeValue);
-           console.log(tokens);   //怎么分开的。厉害了
+          // console.log(tokens);   //怎么分开的。厉害了
         if (!tokens) return;
 
         tokens.forEach((token) => {
@@ -130,10 +130,10 @@
            node.parentNode.removeChild(node);
     };
 
-        _bindDirective(name,value,node){ console.log(node);
+        _bindDirective(name,value,node){
             let descriptors = this.parse(value);
             let dirs = this._directives;
-            descriptors.forEach((descriptor) => {console.log(descriptor);
+            descriptors.forEach((descriptor) => {
                 let a=new Directive(name, node, this, descriptor);
                 dirs.push(
                         a
@@ -238,7 +238,6 @@
                     this._update,
                     this         //对应ctx,directive是每个watcher的作用域
             )
-            console.log(this._update);
             this.update();
         }
 

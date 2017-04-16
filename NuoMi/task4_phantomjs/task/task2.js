@@ -3,6 +3,7 @@
  */
 
 //phantom.outputEncoding = 'gbk';
+    //执行命令示范   phantomjs  task2.js key ipad;
 var page =require('webpage').create();
 var system=require('system');
 var fs=require('fs');

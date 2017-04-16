@@ -7,28 +7,65 @@
 <body>
 <script src="vue.js"></script>
 <div id="example">
-    <my-component></my-component>
-    <my-component></my-component>
-    <my-component></my-component>
-
+    <global-component></global-component>
+     <p>{{message.total}}</p>
+    <my-component v-on:hh="addTotal"></my-component>
+    <my-component v-on:hh="addTotal"></my-component>
+    <my-component v-on:hh="addTotal"></my-component>
+</div>
+<hr>
+<div id="animal">
+    <animal-component species="sheep"></animal-component>
 </div>
 <script>
+    var animal={
+        template:'<span>{{species}}来参加动物聚会啦!</span>',
+        props:['species']
+    }
+    new Vue({
+        el:"#animal",
+        components:{
+            'animal-component':animal
+        }
+    })
+
+    /*--------全局注册-----------*/
+    Vue.component('global-component',{
+        template:'<div>请点击按钮计数</div>'
+    })
+    /*--------局部注册-----------*/
+    //点击后执行count函数,触发hh事件。组件监听到hh事件后,执行addTotal函数
     var Child={
-        template:'<button v-on:click="counter++">{{counter}}</button>',
-        data:function () {
+        template:'<button v-on:click="count">{{counter}}</button>',
+        data:function () {  //data必须返回一个函数
             return {
                 counter:0
             }
+        },
+        methods:{
+            count:function () {
+                this.counter++;
+                this.$emit('hh');
+            }
         }
     }
-    var data={
-        counter:0
-    }
+
     new Vue({
         el:"#example",
         components:{
             'my-component':Child
+        },
+        data:{
+            message:{
+                total:0
+            }
+        },
+        methods:{
+            addTotal:function () {
+                this.message.total++;
+            }
         }
+
 
     })
 </script>

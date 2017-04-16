@@ -2,29 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>reversedMessage</title>
+    <title>computed</title>
 </head>
 <body>
 <script src="vue.js"></script>
 <div id="example">
     <p>Original message: "{{ message.name }}"</p>
     <p>Computed reversed message: "{{ reversedMessage }}"</p>
+    <input type="text" v-model="message.city">
+    <new-component v-bind:city="message.city"></new-component>
+    <hr>
 </div>
 <script>
-    var vm = new Vue({
-        el: '#example',
-        data: {
-            message: {
-                name:"wang"
-            }
-        },
+    var co={
+        props:['city'],
+        template:'<div>{{reversedMessage}}</div>',
         computed: {
             // a computed getter
             reversedMessage: function () {
                 // `this` points to the vm instance
-                return this.message.name.split('').reverse().join('')
+                return this.city.split('').reverse().join('')
             }
         }
+    }
+    var vm = new Vue({
+        el: '#example',
+        data: {
+            message: {
+                name:"wang",
+                city:"Beijing"
+            }
+        },
+        components:{
+            'new-component':co
+        }
+
     })
 </script>
 </body>
