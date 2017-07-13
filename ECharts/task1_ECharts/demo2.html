@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+<div id="Gauge1" class="a" style="float:left;width:30%;height: 100%"></div>
+<div id="Gauge2" class="a" style="float:left;width:30%;height: 100%"></div>
+<div id="Gauge3" class="a" style="float:left;width:30%;height: 100%"></div>
+<script type="text/javascript" src="demo/echarts.js"></script>
+<script type="text/javascript">
+    var gaugedom1 = document.getElementById("Gauge1");
+    var gaugedom2 = document.getElementById("Gauge2");
+    var gaugedom3 = document.getElementById("Gauge3");
+    var Gauge1= echarts.init(gaugedom1);
+    var Gauge2= echarts.init(gaugedom2);
+    var Gauge3= echarts.init(gaugedom3);
+    var app = {};
+    GaugeOption = null;
+    GaugeOption = {
+        tooltip : {
+            formatter: "{a} <br/>{b} : {c}%"
+        },
+        toolbox: {
+            feature: {
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        series: [
+            {
+                name: '业务指标',
+                type: 'gauge',
+                detail: {
+                    formatter:'{value}%',
+//                    textStyle:{
+//                        fontSize:15,
+//                    }
+                },
+                data: [{value: 50, name: '完成率'}]
+            }
+        ]
+    };
+
+    setInterval(function () {
+        GaugeOption.series[0].data[0].value = (Math.random() * 100).toFixed(2) - 0;
+        Gauge1.setOption(GaugeOption, true);
+        Gauge2.setOption(GaugeOption, true);
+        Gauge3.setOption(GaugeOption, true);
+    },2000);
+
+//    if (GaugeOption && typeof GaugeOption === "object") {
+//        Gauge1.setOption(GaugeOption, true);
+//        Gauge2.setOption(GaugeOption, true);
+//        Gauge3.setOption(GaugeOption, true);
+//    }
+</script>
+</body>
+</html>

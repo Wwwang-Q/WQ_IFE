@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+    <meta charset="UTF-8">
+    <title>ECharts</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body style="height: 100%; margin: 0">
+<!--
+   CSS在index.css中。如果要在其中添加,建议写清自己的名字。
+   建议每人单独写自己的js.在最后引入。
+-->
+<div id="container" >
+    <div id="title" >数据可视化</div>
+    <div class="row" >
+        <div class="left col-md-3 col-sm-3 col-xs-3">
+            <div class="pic">
+                <div class="picSub" id=""></div>      <!--将这一层当做container,把dom的id写入即可。-->
+            </div>
+            <div class="pic"></div>
+            <div class="pic"></div>
+        </div>
+
+        <div class="middle col-md-6 col-sm-6 col-xs-6">
+            <div class="pic1" ></div>
+            <div class="pic">
+                <div id="Gauge1" class="box"></div>
+                <div id="Gauge2" class="box"></div>
+                <div id="Gauge3" class="box"></div>
+            </div>
+        </div>
+
+        <div class="right col-md-3 col-sm-3 col-xs-3">
+            <div class="pic" >
+                <div class="picSub" id="pie"></div>
+            </div>
+            <div class="pic"></div>
+            <div class="pic"></div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript" src="echarts.js"></script>
+<script type="text/javascript" src="wq.js"></script>
+
+</body>
+</html>

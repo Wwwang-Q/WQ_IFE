@@ -21,9 +21,9 @@ require.config({
 // 使用
 require(
         [
-            'echarts',
-            'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
-            'echarts/chart/line' // 使用柱状图就加载bar模块，按需加载
+            'demo/echarts',
+            'demo/echarts.js/chart/bar', // 使用柱状图就加载bar模块，按需加载
+            'demo/echarts.js/chart/line' // 使用柱状图就加载bar模块，按需加载
         ],
         function(echarts) {
             var myChart = echarts.init(document.getElementById('main'));
